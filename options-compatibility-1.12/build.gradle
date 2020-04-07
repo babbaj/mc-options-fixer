@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+
+group 'com.babbaj'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+minecraft {
+    version = '1.12.2'
+    mappings = 'stable_39'
+    tweakClass = 'com.babbaj.options.tweaker.Tweaker'
+    runDir = 'run'
+
+    // The sources jar should use SRG names not MCP to ensure compatibility with all mappings
+    makeObfSourceJar = true
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+
+
+
