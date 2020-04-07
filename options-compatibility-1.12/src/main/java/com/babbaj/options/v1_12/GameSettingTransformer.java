@@ -1,4 +1,4 @@
-package com.babbaj.options;
+package com.babbaj.options.v1_12;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
@@ -12,11 +12,7 @@ import java.util.function.Predicate;
 import static org.objectweb.asm.Opcodes.*;
 
 @Resource // mixin is fascist
-public class Transformer implements IClassTransformer {
-
-    {
-        System.out.println("Created Transformer");
-    }
+public class GameSettingTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
@@ -40,7 +36,7 @@ public class Transformer implements IClassTransformer {
     private static void transformGameSettings(ClassNode node) {
         node.methods.stream()
             .filter(mn -> (mn.name.equals("a") || mn.name.equals("loadOptions")) && mn.desc.equals("()V"))
-            .forEach(Transformer::transformLoadOptions);
+            .forEach(GameSettingTransformer::transformLoadOptions);
     }
 
     private static void transformLoadOptions(MethodNode mn) {

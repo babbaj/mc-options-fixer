@@ -23,7 +23,7 @@ sourceCompatibility = 1.8
 minecraft {
     version = '1.12.2'
     mappings = 'stable_39'
-    tweakClass = 'com.babbaj.options.tweaker.Tweaker'
+    tweakClass = 'com.babbaj.options.v1_12.tweaker.Tweaker'
     runDir = 'run'
 
     // The sources jar should use SRG names not MCP to ensure compatibility with all mappings

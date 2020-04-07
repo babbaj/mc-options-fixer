@@ -1,4 +1,4 @@
-package com.babbaj.options.tweaker;
+package com.babbaj.options.v1_15.tweaker;
 
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -8,13 +8,12 @@ import java.util.List;
 
 public class Tweaker implements ITweaker {
     @Override
-    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
-
-    }
+    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) { }
 
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
-        classLoader.registerTransformer("com.babbaj.options.Transformer");
+        classLoader.addTransformerExclusion("com.babbaj.options.v1_15.util.");
+        classLoader.registerTransformer("com.babbaj.options.v1_15.tweaker.LaunchWrapperGameSettingTransformerWrapper");
     }
 
     @Override
@@ -24,6 +23,6 @@ public class Tweaker implements ITweaker {
 
     @Override
     public String[] getLaunchArguments() {
-        return new String[0];
+        return null;
     }
 }
