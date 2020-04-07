@@ -52,7 +52,6 @@ public class Transformer implements IClassTransformer {
         AbstractInsnNode iter = loop;
         while (iter != loop.label) {
             if (iter.getOpcode() == ALOAD && ((VarInsnNode) iter).var == s2Index) {
-                System.out.println("trolling");
                 final MethodInsnNode parse = new MethodInsnNode(INVOKESTATIC, "com/babbaj/options/EpicOptionParser", "fix", "(Ljava/lang/String;)Ljava/lang/String;", false);
                 mn.instructions.insert(iter, parse);
             }
@@ -90,19 +89,5 @@ public class Transformer implements IClassTransformer {
 
     private static boolean isField(FieldInsnNode node, String owner, String name) {
         return node.owner.equals(owner) && node.name.equals(name);
-    }
-
-    private static boolean isFunction(MethodInsnNode node, String owner, String name, String desc)  {
-        return node.owner.equals(owner) && node.name.equals(name) && node.desc.equals(desc);
-    }
-
-    private static class Pair<T, U> {
-        public final T first;
-        public final U second;
-
-        Pair(T first, U second) {
-            this.first = first;
-            this.second = second;
-        }
     }
 }
