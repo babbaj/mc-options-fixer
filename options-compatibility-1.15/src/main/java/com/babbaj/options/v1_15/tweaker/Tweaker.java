@@ -12,8 +12,8 @@ public class Tweaker implements ITweaker {
 
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
-        classLoader.addTransformerExclusion("com.babbaj.options.v1_15.util.");
         classLoader.registerTransformer("com.babbaj.options.v1_15.tweaker.LaunchWrapperGameSettingTransformerWrapper");
+        classLoader.addTransformerExclusion("com.babbaj.options.v1_15.util.");
     }
 
     @Override

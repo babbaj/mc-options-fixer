@@ -21,7 +21,6 @@ public class KeyOptionFixer {
                     .map(str -> new Dynamic<>(dyn.getOps(), StringNBT.valueOf(str)))
                     .orElse(dyn);
 
-                System.out.println("XD");
                 return new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), newDyn);
             } else {
                 return entry;

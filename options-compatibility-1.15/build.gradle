@@ -41,8 +41,6 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            main 'com.babbaj.options.v1_15.LaunchTesting'
-
             environment 'assetIndex', '{asset_index}'
             environment 'assetDirectory', downloadAssets.output
             environment 'nativesDirectory', extractNatives.output
@@ -72,7 +70,6 @@ dependencies {
     compile ('cpw.mods:modlauncher:5.0.+')
     runtime compile('net.minecraft:launchwrapper:1.12')
     runtime compile('org.ow2.asm:asm-debug-all:5.2')
-    runtime compile('com.github.ImpactDevelopment:SimpleTweaker:1.2')
 
     testImplementation 'junit:junit:4.12'
 }

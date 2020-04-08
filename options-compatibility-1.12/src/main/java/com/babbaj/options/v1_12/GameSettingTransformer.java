@@ -3,6 +3,7 @@ package com.babbaj.options.v1_12;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import javax.annotation.Resource;
@@ -40,38 +41,18 @@ public class GameSettingTransformer implements IClassTransformer {
     }
 
     private static void transformLoadOptions(MethodNode mn) {
-        final JumpInsnNode loop = findLoop(mn)
-            .orElseThrow(() -> new IllegalStateException("Failed to find parsing loop"));
+        final AbstractInsnNode start = mn.instructions.getFirst();
+        final MethodInsnNode callDataFix = (MethodInsnNode) findNode(start, insn -> insn.getOpcode() == INVOKESPECIAL && isDataFix((MethodInsnNode) insn))
+            .orElseThrow(IllegalStateException::new);
+        final String compoundType = Type.getReturnType(callDataFix.desc).getDescriptor(); // rofl
 
-        final int s2Index = 5;
+        InsnList list = new InsnList();
+        list.add(new InsnNode(DUP));
+        list.add(new MethodInsnNode(INVOKESTATIC, "com/babbaj/options/v1_12/KeyOptionFixer", "fixSettingTagCompound", String.format("(%s)V", compoundType)));
 
-        AbstractInsnNode iter = loop;
-        while (iter != loop.label) {
-            if (iter.getOpcode() == ALOAD && ((VarInsnNode) iter).var == s2Index) {
-                final MethodInsnNode parse = new MethodInsnNode(INVOKESTATIC, "com/babbaj/options/EpicOptionParser", "fix", "(Ljava/lang/String;)Ljava/lang/String;", false);
-                mn.instructions.insert(iter, parse);
-            }
-
-            iter = iter.getNext();
-        }
-
+        mn.instructions.insert(callDataFix, list);
     }
 
-    @SuppressWarnings("unchecked")
-    private static Optional<JumpInsnNode> findLoop(MethodNode node) {
-        AbstractInsnNode iter = node.instructions.getFirst();
-
-        while (iter.getNext() != null) {
-            if (iter.getOpcode() == GETFIELD && (isField((FieldInsnNode) iter, "net/minecraft/client/settings/GameSettings", "keyBindings")
-                || isField((FieldInsnNode) iter, "bid", "as"))
-            ) {
-                return (Optional<JumpInsnNode>) findNode(iter, insn -> insn.getOpcode() == IF_ICMPGE);
-            }
-
-            iter = iter.getNext();
-        }
-        return Optional.empty();
-    }
 
     private static Optional<? extends AbstractInsnNode> findNode(AbstractInsnNode start, Predicate<AbstractInsnNode> pred) {
         AbstractInsnNode iter = start;
@@ -83,7 +64,12 @@ public class GameSettingTransformer implements IClassTransformer {
         return Optional.empty();
     }
 
-    private static boolean isField(FieldInsnNode node, String owner, String name) {
-        return node.owner.equals(owner) && node.name.equals(name);
+    private static boolean isDataFix(MethodInsnNode insn) {
+        return isFunction(insn, "net/minecraft/client/settings/GameSettings", "dataFix", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound")
+            || isFunction(insn, "bid", "a", "(Lfy;)Lfy;");
     }
+    private static boolean isFunction(MethodInsnNode insn, String owner, String name, String desc) {
+        return insn.owner.equals(owner) && insn.name.equals(name) && insn.desc.equals(desc);
+    }
+
 }
