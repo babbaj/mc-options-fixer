@@ -1,0 +1,87 @@
+group 'com.babbaj'
+version '1.5.2'
+
+buildscript {
+    repositories {
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name = 'impactdevelopment-repo'
+            url = 'https://impactdevelopment.github.io/maven/'
+        }
+        jcenter()
+    }
+
+    dependencies {
+        classpath group: 'com.github.ImpactDevelopment', name: 'ForgeGradle', version: '3.0.115'
+    }
+}
+
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'java'
+apply plugin: 'net.minecraftforge.gradle'
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    options.encoding = "UTF-8" // allow emoji in comments :^)
+}
+
+
+minecraft {
+    mappings channel: 'snapshot', version: '20200213-1.15.1'
+
+    reobfMappings 'searge'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            main 'com.babbaj.options.v1_15.LaunchTesting'
+
+            environment 'assetIndex', '{asset_index}'
+            environment 'assetDirectory', downloadAssets.output
+            environment 'nativesDirectory', extractNatives.output
+
+            environment 'tweakClass', 'com.babbaj.options.v1_15.tweaker.Tweaker'
+
+            if (Os.isFamily(Os.FAMILY_MAC)) {
+                jvmArgs "-XstartOnFirstThread"
+            }
+        }
+
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = 'impactdevelopment-repo'
+        url = 'https://impactdevelopment.github.io/maven/'
+    }
+}
+
+dependencies {
+    minecraft 'com.github.ImpactDevelopment:Vanilla:1.15.2'
+
+    compile ('cpw.mods:modlauncher:5.0.+')
+    runtime compile('net.minecraft:launchwrapper:1.12')
+    runtime compile('org.ow2.asm:asm-debug-all:5.2')
+    runtime compile('com.github.ImpactDevelopment:SimpleTweaker:1.2')
+
+    testImplementation 'junit:junit:4.12'
+}
+
+
+/*jar {
+    manifest {
+        attributes(
+
+        )
+    }
+}*/
