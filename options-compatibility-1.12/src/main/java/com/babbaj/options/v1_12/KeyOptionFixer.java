@@ -2,7 +2,6 @@ package com.babbaj.options.v1_12;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -153,20 +152,18 @@ public class KeyOptionFixer {
             ex.printStackTrace();
         }
 
+        // https://minecraft.gamepedia.com/Data_version
         if (i > 1343) { // newer than 1.12.2
-            final Map<String, NBTTagString> fixedData = nbt.getKeySet()
+            final Map<String, String> fixedData = nbt.getKeySet()
                 .stream()
                 .collect(Collectors.toMap(k -> k, k -> {
                     final String value = nbt.getString(k);
                     final Integer mapped = CONVERSION_MAP.get(value);
-                    if (mapped != null) {
-                        return new NBTTagString(mapped.toString());
-                    } else {
-                        return new NBTTagString(value);
-                    }
+
+                    return mapped != null ? mapped.toString() : value;
                 }));
 
-            fixedData.forEach(nbt::setTag);
+            fixedData.forEach(nbt::setString);
         }
     }
 
