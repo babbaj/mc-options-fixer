@@ -5,9 +5,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -26,7 +24,6 @@ public enum KeyOptionFixerTransformer {
     }
 
     public static void transformMethod(MethodNode methodNode) {
-        System.out.println("Called transformMethod");
         final AbstractInsnNode start = methodNode.instructions.getFirst();
         final MethodInsnNode stream = (MethodInsnNode) findNode(start,
             insn -> insn.getOpcode() == INVOKEINTERFACE && isFunction((MethodInsnNode) insn, "java/util/Set", "stream", "()Ljava/util/stream/Stream;")

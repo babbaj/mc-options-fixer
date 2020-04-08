@@ -4,9 +4,10 @@ import cpw.mods.modlauncher.api.*;
 import org.objectweb.asm.tree.MethodNode;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ModLauncherTransformerService implements ITransformationService {
@@ -17,9 +18,7 @@ public class ModLauncherTransformerService implements ITransformationService {
     }
 
     @Override
-    public void initialize(IEnvironment environment) {
-        System.out.println("Initializing SettingFixerTransformerService");
-    }
+    public void initialize(IEnvironment environment) { }
 
     @Override
     public void beginScanning(IEnvironment environment) { }
@@ -53,6 +52,14 @@ public class ModLauncherTransformerService implements ITransformationService {
                         .collect(Collectors.toSet());
                 }
             }
+        );
+    }
+
+    @Override
+    public Map.Entry<Set<String>, Supplier<Function<String, Optional<URL>>>> additionalClassesLocator() {
+        return new AbstractMap.SimpleEntry<>(
+            Collections.singleton("com.babbaj.options.v1_15."),
+            () -> (clazz -> Optional.ofNullable(getClass().getClassLoader().getResource(clazz)))
         );
     }
 }
